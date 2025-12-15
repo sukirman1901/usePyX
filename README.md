@@ -450,9 +450,7 @@ myapp/
 | File | Description |
 |------|-------------|
 | [SYNTAX_GUIDE.md](SYNTAX_GUIDE.md) | UI syntax reference |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | MVC architecture |
-| [BLUEPRINT.md](BLUEPRINT.md) | Design & vision |
-| [ANALYSIS.md](ANALYSIS.md) | Framework analysis |
+| [SYNTAX_GUIDE.md](SYNTAX_GUIDE.md) | UI syntax reference |
 
 ---
 
