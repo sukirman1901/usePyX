@@ -1,6 +1,6 @@
 [project]
 name = "usepyx"
-version = "0.1.1"
+version = "0.1.2"
 description = "Pure Python Full-Stack Framework: No JavaScript, no HTML mess, just Zen Mode."
 readme = "README.md"
 license = { file = "LICENSE" }

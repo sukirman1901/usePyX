@@ -230,6 +230,20 @@ ui.button("Login").on_click(MyAuth.login)
 
 ---
 
+## 🛡️ Enterprise Security
+
+PyX is "Secure by Default" with built-in protection against common vulnerabilities.
+
+| Feature | Description |
+|---------|-------------|
+| **🔐 Bcrypt Hashing** | Auto-salted password hashing |
+| **🚦 Rate Limiting** | IP-based request throttling |
+| **🛡️ CSRF & XSS** | Built-in protection & sanitization |
+| **🔒 Security Headers** | OWASP-recommended headers (HSTS, CSP) |
+| **🚫 Brute-force** | Account lockout mechanism |
+| **💉 SQL Injection** | Prevented via parameterized queries |
+
+
 ## 🛠️ CLI Commands
 
 ### Project Management
