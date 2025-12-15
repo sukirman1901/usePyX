@@ -27,12 +27,15 @@ PyX adalah framework full-stack yang memungkinkan Anda membangun aplikasi web **
 ## 📦 Installation
 
 ```bash
+# From PyPI
+pip install usepyx
+
 # From source
-pip install git+https://github.com/pyx-framework/pyx.git
+pip install git+https://github.com/sukirman1901/usePyX.git
 
 # For development
-git clone https://github.com/pyx-framework/pyx.git
-cd pyx
+git clone https://github.com/sukirman1901/usePyX.git
+cd usePyX
 pip install -e .
 ```
 
@@ -490,8 +493,8 @@ PyX mengikuti filosofi bahwa developer productivity lebih penting dari ceremonia
 ## 🤝 Contributing
 
 ```bash
-git clone https://github.com/pyx-framework/pyx.git
-cd pyx
+git clone https://github.com/sukirman1901/usePyX.git
+cd usePyX
 pip install -e .
 pyx test
 ```

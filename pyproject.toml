@@ -1,6 +1,6 @@
 [project]
 name = "usepyx"
-version = "0.1.0"
+version = "0.1.1"
 description = "Pure Python Full-Stack Framework: No JavaScript, no HTML mess, just Zen Mode."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -38,10 +38,10 @@ dependencies = [
 requires-python = ">=3.9"
 
 [project.urls]
-Homepage = "https://github.com/pyx-framework/pyx"
-Documentation = "https://github.com/pyx-framework/pyx/blob/main/README.md"
-Repository = "https://github.com/pyx-framework/pyx.git"
-Issues = "https://github.com/pyx-framework/pyx/issues"
+Homepage = "https://github.com/sukirman1901/usePyX"
+Documentation = "https://github.com/sukirman1901/usePyX/blob/main/README.md"
+Repository = "https://github.com/sukirman1901/usePyX.git"
+Issues = "https://github.com/sukirman1901/usePyX/issues"
 
 [project.scripts]
 pyx = "pyx.cli:app"
