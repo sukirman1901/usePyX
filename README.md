@@ -426,6 +426,27 @@ app.add_page("/product/{id}", render_page, metadata=product_meta)
 
 ---
 
+---
+
+## 🎨 Figma to PyX Plugin
+
+> **Design in Figma, Code in Python.**
+
+Instantly convert your Figma designs into clean, production-ready PyX code with our official plugin.
+
+![Figma to PyX Plugin](Figma.png)
+
+### ✨ Features
+- **Auto-Code Generation**: Select any Frame or Group -> Get `ui.div`, `ui.text`, `ui.button` code.
+- **Smart Detection**: automatically recognizes:
+  - 📊 **Charts**: (`Bar`, `Line`, `Pie` detected by name)
+  - 🖼️ **Icons**: (`Lucide` icons detected)
+  - 🔘 **Components**: (Buttons, Inputs, Badges)
+- **Zen Mode Ready**: Generates Pythonic styling (e.g. `.bg("red").p(4)`).
+- **Responsive Layouts**: Converts Auto-Layout to Flexbox automatically.
+
+---
+
 ## 📁 Project Structure
 
 ```

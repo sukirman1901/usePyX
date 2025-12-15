@@ -1,0 +1,12 @@
+{
+    "name": "usePyX",
+    "id": "figma-to-pyx",
+    "api": "1.0.0",
+    "main": "code.js",
+    "capabilities": [],
+    "enableProposedApi": false,
+    "editorType": [
+        "figma"
+    ],
+    "ui": "src/ui.html"
+}

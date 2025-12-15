@@ -29,6 +29,15 @@ class PyxElement:
             if c: self.classes.append(c)
         return self
 
+    def _cls_overwrite(self, prefix, new_cls):
+        """
+        Smartly remove existing classes that start with the same prefix 
+        before adding the new one. Use this for properties where 
+        only one value makes sense (e.g. w-10 vs w-20).
+        """
+        self.classes = [c for c in self.classes if not c.startswith(prefix + "-")]
+        return self.cls(new_cls)
+
     def id(self, component_id):
         self.attrs["id"] = component_id
         return self
@@ -344,104 +353,204 @@ class PyxElement:
     # =========================================================================
     # 3. FLEXBOX & GRID
     # =========================================================================
-    def basis(self, val): return self.cls(f"basis-{val}")
-    def flex_row(self): return self.cls("flex-row")
-    def flex_row_reverse(self): return self.cls("flex-row-reverse")
-    def flex_col(self): return self.cls("flex-col")
-    def flex_col_reverse(self): return self.cls("flex-col-reverse")
-    def flex_wrap(self): return self.cls("flex-wrap")
-    def flex_nowrap(self): return self.cls("flex-nowrap")
-    def flex_1(self): return self.cls("flex-1")
-    def flex_auto(self): return self.cls("flex-auto")
-    def flex_none(self): return self.cls("flex-none")
-    def grow(self): return self.cls("grow")
-    def grow_0(self): return self.cls("grow-0")
-    def shrink(self): return self.cls("shrink")
-    def shrink_0(self): return self.cls("shrink-0")
-    def order(self, val): return self.cls(f"order-{val}")
+    def basis(self, val): return self._cls_overwrite("basis", f"basis-{val}")
+    def flex_row(self): return self._cls_overwrite("flex", "flex-row")
+    def flex_row_reverse(self): return self._cls_overwrite("flex", "flex-row-reverse")
+    def flex_col(self): return self._cls_overwrite("flex", "flex-col")
+    def flex_col_reverse(self): return self._cls_overwrite("flex", "flex-col-reverse")
+    def flex_wrap(self): return self._cls_overwrite("flex", "flex-wrap")
+    def flex_nowrap(self): return self._cls_overwrite("flex", "flex-nowrap")
+    def flex_1(self): return self._cls_overwrite("flex", "flex-1")
+    def flex_auto(self): return self._cls_overwrite("flex", "flex-auto")
+    def flex_none(self): return self._cls_overwrite("flex", "flex-none")
+    def grow(self): return self._cls_overwrite("grow", "grow")
+    def grow_0(self): return self._cls_overwrite("grow", "grow-0")
+    def shrink(self): return self._cls_overwrite("shrink", "shrink")
+    def shrink_0(self): return self._cls_overwrite("shrink", "shrink-0")
+    def order(self, val): return self._cls_overwrite("order", f"order-{val}")
     
     # Grid
-    def cols(self, val): return self.cls(f"grid-cols-{val}")
-    def col_span(self, val): return self.cls(f"col-span-{val}")
-    def col_start(self, val): return self.cls(f"col-start-{val}")
-    def rows(self, val): return self.cls(f"grid-rows-{val}")
-    def row_span(self, val): return self.cls(f"row-span-{val}")
-    def row_start(self, val): return self.cls(f"row-start-{val}")
-    def grid_flow(self, val): return self.cls(f"grid-flow-{val}") # row, col, dense
-    def auto_cols(self, val): return self.cls(f"auto-cols-{val}")
-    def auto_rows(self, val): return self.cls(f"auto-rows-{val}")
+    def cols(self, val): return self._cls_overwrite("grid-cols", f"grid-cols-{val}")
+    def col_span(self, val): return self._cls_overwrite("col-span", f"col-span-{val}")
+    def col_start(self, val): return self._cls_overwrite("col-start", f"col-start-{val}")
+    def rows(self, val): return self._cls_overwrite("grid-rows", f"grid-rows-{val}")
+    def row_span(self, val): return self._cls_overwrite("row-span", f"row-span-{val}")
+    def row_start(self, val): return self._cls_overwrite("row-start", f"row-start-{val}")
+    def grid_flow(self, val): return self._cls_overwrite("grid-flow", f"grid-flow-{val}") # row, col, dense
+    def auto_cols(self, val): return self._cls_overwrite("auto-cols", f"auto-cols-{val}")
+    def auto_rows(self, val): return self._cls_overwrite("auto-rows", f"auto-rows-{val}")
     
-    # Gap
-    def gap(self, val): return self.cls(f"gap-{val}")
-    def gap_x(self, val): return self.cls(f"gap-x-{val}")
-    def gap_y(self, val): return self.cls(f"gap-y-{val}")
+    # Gap - ALREADY UPDATED
+    def gap(self, val): return self._cls_overwrite("gap", f"gap-{val}")
+    def gap_x(self, val): return self._cls_overwrite("gap-x", f"gap-x-{val}")
+    def gap_y(self, val): return self._cls_overwrite("gap-y", f"gap-y-{val}")
     
     # Alignment
-    def justify(self, val): return self.cls(f"justify-{val}") # start, end, center, between...
-    def justify_items(self, val): return self.cls(f"justify-items-{val}")
-    def justify_self(self, val): return self.cls(f"justify-self-{val}")
-    def items(self, val): return self.cls(f"items-{val}") # align-items
+    def justify(self, val): return self._cls_overwrite("justify", f"justify-{val}") # start, end, center, between...
+    def justify_items(self, val): return self._cls_overwrite("justify-items", f"justify-items-{val}")
+    def justify_self(self, val): return self._cls_overwrite("justify-self", f"justify-self-{val}")
+    def items(self, val): return self._cls_overwrite("items", f"items-{val}") # align-items
     def content(self, children_val):
         if isinstance(children_val, list):
             self.children.extend(children_val)
         else:
             self.children.append(children_val)
         return self
-    def align_content(self, val): return self.cls(f"content-{val}")
-    def self(self, val): return self.cls(f"self-{val}") # align-self
-    def place_content(self, val): return self.cls(f"place-content-{val}")
-    def place_items(self, val): return self.cls(f"place-items-{val}")
-    def place_self(self, val): return self.cls(f"place-self-{val}")
+    def align_content(self, val): return self._cls_overwrite("content", f"content-{val}")
+    def self(self, val): return self._cls_overwrite("self", f"self-{val}") # align-self
+    def place_content(self, val): return self._cls_overwrite("place-content", f"place-content-{val}")
+    def place_items(self, val): return self._cls_overwrite("place-items", f"place-items-{val}")
+    def place_self(self, val): return self._cls_overwrite("place-self", f"place-self-{val}")
+
+    # ... SPACING ...
+    
+    # =========================================================================
+    # 9. EFFECTS & FILTERS
+    # =========================================================================
+    def shadow(self, val=""): return self._cls_overwrite("shadow", f"shadow-{val}" if val else "shadow")
+    def shadow_color(self, val): return self._cls_overwrite("shadow", f"shadow-{val}")
+    def opacity(self, val): return self._cls_overwrite("opacity", f"opacity-{val}")
+    def mix_blend(self, val): return self._cls_overwrite("mix-blend", f"mix-blend-{val}")
+    def bg_blend(self, val): return self._cls_overwrite("bg-blend", f"bg-blend-{val}")
+    
+    # Filters
+    def filter(self): return self.cls("filter")
+    def blur(self, val=""): return self._cls_overwrite("blur", f"blur-{val}" if val else "blur")
+    def brightness(self, val): return self._cls_overwrite("brightness", f"brightness-{val}")
+    def contrast(self, val): return self._cls_overwrite("contrast", f"contrast-{val}")
+    def drop_shadow(self, val): return self._cls_overwrite("drop-shadow", f"drop-shadow-{val}")
+    def grayscale(self, val=""): return self._cls_overwrite("grayscale", f"grayscale-{val}" if val else "grayscale")
+    def hue_rotate(self, val): return self._cls_overwrite("hue-rotate", f"hue-rotate-{val}")
+    def invert(self, val=""): return self._cls_overwrite("invert", f"invert-{val}" if val else "invert")
+    def saturate(self, val): return self._cls_overwrite("saturate", f"saturate-{val}")
+    def sepia(self, val=""): return self._cls_overwrite("sepia", f"sepia-{val}" if val else "sepia")
+    def backdrop_blur(self, val=""): return self._cls_overwrite("backdrop-blur", f"backdrop-blur-{val}" if val else "backdrop-blur")
+
+    # =========================================================================
+    # 12. TRANSFORMS
+    # =========================================================================
+    def scale(self, val): return self._cls_overwrite("scale", f"scale-{val}")
+    def rotate(self, val): return self._cls_overwrite("rotate", f"rotate-{val}")
+    def translate_x(self, val): return self._cls_overwrite("translate-x", f"translate-x-{val}")
+    def translate_y(self, val): return self._cls_overwrite("translate-y", f"translate-y-{val}")
+    def skew_x(self, val): return self._cls_overwrite("skew-x", f"skew-x-{val}")
+    def skew_y(self, val): return self._cls_overwrite("skew-y", f"skew-y-{val}")
+    def origin(self, val): return self._cls_overwrite("origin", f"origin-{val}")
+    
+    # SVG
+    def fill(self, val): return self._cls_overwrite("fill", f"fill-{val}")
+    def stroke(self, val): return self._cls_overwrite("stroke", f"stroke-{val}")
+    def stroke_width(self, val): return self._cls_overwrite("stroke", f"stroke-{val}")
+
+    # =========================================================================
+    # 14. ACCESSIBILITY & POSITION
+    # =========================================================================
+    def z(self, val): return self._cls_overwrite("z", f"z-{val}")
+    def top(self, val): return self._cls_overwrite("top", f"top-{val}")
+    def right(self, val): return self._cls_overwrite("right", f"right-{val}")
+    def bottom(self, val): return self._cls_overwrite("bottom", f"bottom-{val}")
+    def left(self, val): return self._cls_overwrite("left", f"left-{val}")
+    def inset(self, val): return self._cls_overwrite("inset", f"inset-{val}")
 
     # =========================================================================
     # 4. SPACING
     # =========================================================================
-    def p(self, val): return self.cls(f"p-{val}")
-    def px(self, val): return self.cls(f"px-{val}")
-    def py(self, val): return self.cls(f"py-{val}")
-    def pt(self, val): return self.cls(f"pt-{val}")
-    def pr(self, val): return self.cls(f"pr-{val}")
-    def pb(self, val): return self.cls(f"pb-{val}")
-    def pl(self, val): return self.cls(f"pl-{val}")
+    def p(self, val): return self._cls_overwrite("p", f"p-{val}")
+    def px(self, val): return self._cls_overwrite("px", f"px-{val}")
+    def py(self, val): return self._cls_overwrite("py", f"py-{val}")
+    def pt(self, val): return self._cls_overwrite("pt", f"pt-{val}")
+    def pr(self, val): return self._cls_overwrite("pr", f"pr-{val}")
+    def pb(self, val): return self._cls_overwrite("pb", f"pb-{val}")
+    def pl(self, val): return self._cls_overwrite("pl", f"pl-{val}")
     
-    def m(self, val): return self.cls(f"m-{val}")
-    def mx(self, val): return self.cls(f"mx-{val}")
-    def my(self, val): return self.cls(f"my-{val}")
-    def mt(self, val): return self.cls(f"mt-{val}")
-    def mr(self, val): return self.cls(f"mr-{val}")
-    def mb(self, val): return self.cls(f"mb-{val}")
-    def ml(self, val): return self.cls(f"ml-{val}")
+    def m(self, val): return self._cls_overwrite("m", f"m-{val}")
+    def mx(self, val): return self._cls_overwrite("mx", f"mx-{val}")
+    def my(self, val): return self._cls_overwrite("my", f"my-{val}")
+    def mt(self, val): return self._cls_overwrite("mt", f"mt-{val}")
+    def mr(self, val): return self._cls_overwrite("mr", f"mr-{val}")
+    def mb(self, val): return self._cls_overwrite("mb", f"mb-{val}")
+    def ml(self, val): return self._cls_overwrite("ml", f"ml-{val}")
     
-    def space_x(self, val): return self.cls(f"space-x-{val}")
-    def space_y(self, val): return self.cls(f"space-y-{val}")
+    def space_x(self, val): return self._cls_overwrite("space-x", f"space-x-{val}")
+    def space_y(self, val): return self._cls_overwrite("space-y", f"space-y-{val}")
 
     # =========================================================================
     # 5. SIZING
     # =========================================================================
-    def w(self, val): return self.cls(f"w-{val}")
-    def w_full(self): return self.cls("w-full")
-    def w_screen(self): return self.cls("w-screen")
-    def min_w(self, val): return self.cls(f"min-w-{val}")
-    def max_w(self, val): return self.cls(f"max-w-{val}")
+    def w(self, val): return self._cls_overwrite("w", f"w-{val}")
+    def w_full(self): return self._cls_overwrite("w", "w-full") # Overwrites w-
+    def w_screen(self): return self._cls_overwrite("w", "w-screen")
+    def min_w(self, val): return self._cls_overwrite("min-w", f"min-w-{val}")
+    def max_w(self, val): return self._cls_overwrite("max-w", f"max-w-{val}")
     
-    def h(self, val): return self.cls(f"h-{val}")
-    def h_full(self): return self.cls("h-full")
-    def h_screen(self): return self.cls("h-screen")
-    def min_h(self, val): return self.cls(f"min-h-{val}")
-    def max_h(self, val): return self.cls(f"max-h-{val}")
+    def h(self, val): return self._cls_overwrite("h", f"h-{val}")
+    def h_full(self): return self._cls_overwrite("h", "h-full")
+    def h_screen(self): return self._cls_overwrite("h", "h-screen")
+    def min_h(self, val): return self._cls_overwrite("min-h", f"min-h-{val}")
+    def max_h(self, val): return self._cls_overwrite("max-h", f"max-h-{val}")
 
     # =========================================================================
     # 6. TYPOGRAPHY
     # =========================================================================
-    def font(self, val): return self.cls(f"font-{val}") # sans, serif, mono, bold...
-    def text(self, val): return self.cls(f"text-{val}") # size or color
+    # =========================================================================
+    # 6. TYPOGRAPHY
+    # =========================================================================
+    def font(self, val): return self._cls_overwrite("font", f"font-{val}")
+    
+    def text(self, val): 
+        """
+        Smart text setter. Distinguishes between size, color, and alignment context.
+        """
+        new_cls = f"text-{val}"
+        
+        # Heuristic to detect if val is a size
+        sizes = {"xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl", "5xl", "6xl", "7xl", "8xl", "9xl"}
+        alignments = {"left", "center", "right", "justify", "start", "end"}
+        overflows = {"ellipsis", "clip", "wrap", "nowrap", "balance"}
+        
+        is_size = val in sizes
+        is_align = val in alignments
+        is_overflow = val in overflows
+        
+        # Determine prefix to overwrite
+        if is_size:
+            # changing size
+            self.classes = [c for c in self.classes if c.replace("text-", "") not in sizes]
+        elif is_align:
+             self.classes = [c for c in self.classes if c.replace("text-", "") not in alignments]
+        elif is_overflow:
+             self.classes = [c for c in self.classes if c.replace("text-", "") not in overflows]
+        else:
+            # Assume it's a color
+            # Remove existing text colors (heuristic: not a size, not align, not overflow)
+            def is_color(c):
+                if not c.startswith("text-"): return False
+                suffix = c[5:]
+                if suffix in sizes or suffix in alignments or suffix in overflows: return False
+                return True
+            self.classes = [c for c in self.classes if not is_color(c)]
+            
+        return self.cls(new_cls)
+
     def antialiased(self): return self.cls("antialiased")
     def subpixel_antialiased(self): return self.cls("subpixel-antialiased")
     def italic(self): return self.cls("italic")
     def not_italic(self): return self.cls("not-italic")
-    def tracking(self, val): return self.cls(f"tracking-{val}") # letter-spacing
-    def line_clamp(self, val): return self.cls(f"line-clamp-{val}")
-    def leading(self, val): return self.cls(f"leading-{val}") # line-height
+    def tracking(self, val): return self._cls_overwrite("tracking", f"tracking-{val}")
+    def line_clamp(self, val): return self._cls_overwrite("line-clamp", f"line-clamp-{val}")
+    def leading(self, val): return self._cls_overwrite("leading", f"leading-{val}")
+    
+    # Gap (Layout)
+    def gap(self, val): return self._cls_overwrite("gap", f"gap-{val}")
+    def gap_x(self, val): return self._cls_overwrite("gap-x", f"gap-x-{val}")
+    def gap_y(self, val): return self._cls_overwrite("gap-y", f"gap-y-{val}")
+    
+    # Rounded (Borders)
+    def rounded(self, val): return self._cls_overwrite("rounded", f"rounded-{val}")
+    def rounded_t(self, val): return self._cls_overwrite("rounded-t", f"rounded-t-{val}")
+    def rounded_r(self, val): return self._cls_overwrite("rounded-r", f"rounded-r-{val}")
+    def rounded_b(self, val): return self._cls_overwrite("rounded-b", f"rounded-b-{val}")
+    def rounded_l(self, val): return self._cls_overwrite("rounded-l", f"rounded-l-{val}")
     
     # List Style
     def list_style(self, val): return self.cls(f"list-{val}") # none, disc, decimal
@@ -481,7 +590,51 @@ class PyxElement:
     # =========================================================================
     # 7. BACKGROUNDS
     # =========================================================================
-    def bg(self, val): return self.cls(f"bg-{val}")
+    # =========================================================================
+    # 7. BACKGROUNDS
+    # =========================================================================
+    def bg(self, val):
+        """
+        Set background class. 
+        Smartly removes existing background color classes to ensure the new one applies (Zen Mode).
+        Preserves bg properties (position, size, etc.) and gradients.
+        """
+        new_cls = f"bg-{val}"
+        
+        # Known keywords for bg properties that are NOT colors
+        # We want to keep these if we are setting a color
+        non_color_keywords = {
+            "fixed", "local", "scroll", # attachment
+            "bottom", "center", "left", "right", "top", # position
+            "repeat", "no-repeat", # repeat
+            "auto", "cover", "contain", # size
+            "none", # image
+            "clip", "origin" # prefixes
+        }
+        
+        def is_conflicting_color(c):
+            if not c.startswith("bg-"): return False
+            if c == new_cls: return False # Don't delete if exact duplicate (though re-adding is fine)
+            
+            # Keep gradient, opacity
+            if c.startswith("bg-gradient-") or c.startswith("bg-opacity-"): return False
+            
+            suffix = c[3:]
+            
+            # Check for property keywords
+            if suffix in non_color_keywords: return False
+            if suffix.startswith("clip-") or suffix.startswith("origin-"): return False
+            if suffix.startswith("repeat-"): return False
+            if suffix.startswith("left-") or suffix.startswith("right-"): return False # e.g. left-bottom
+            
+            # Assume it's a color (e.g. bg-red-500, bg-black, bg-[#...])
+            return True
+
+        # Filter out old colors
+        self.classes = [c for c in self.classes if not is_conflicting_color(c)]
+        
+        return self.cls(new_cls)
+
     def bg_image(self, val): return self.cls(f"bg-{val}") # none, gradient-to-r...
     def bg_gradient(self, dir="to-r"): return self.cls(f"bg-gradient-{dir}")
     def from_(self, val): return self.cls(f"from-{val}")
@@ -764,16 +917,25 @@ class UI:
         return el
 
     @staticmethod
-    def button(text, on_click=None, primary=True):
-        el = PyxElement("button", text).px(4).py(2).rounded("md").bg("blue-600").text("white").font("medium").hover("bg-blue-700").cursor("pointer")
+    def button(text, on_click=None, variant="primary", primary=True):
+        # Backward compatibility for primary=False -> variant="secondary"
+        if not primary and variant == "primary":
+            variant = "secondary"
+            
+        el = PyxElement("button", text).cursor("pointer")
+        
+        if variant == "primary":
+            el.px(4).py(2).rounded("md").bg("blue-600").text("white").font("medium").hover("bg-blue-700")
+        elif variant == "secondary":
+             el.px(4).py(2).rounded("md").bg("white").text("gray-700").border("gray-300").hover("bg-gray-50")
+        elif variant == "ghost":
+             el.px(4).py(2).rounded("md").bg("transparent").text("gray-700").hover("bg-gray-100")
+        elif variant == "custom":
+             pass # No default styles
         
         if on_click:
             handler_name = on_click.__name__ if callable(on_click) else str(on_click)
-            el.attr("onclick", f"ws.send(JSON.stringify({{ 'type': 'event', 'handler': '{handler_name}' }}))")
-
-        if not primary:
-            # Secondary override
-            el.bg("white").text("gray-700").border("gray-300").hover("bg-gray-50")
+            el.attr("onclick", f"ws.send(JSON.stringify({{ 'type': 'event', 'handler': '{handler_name}' }}))") # '
             
         _ctx.add(el)
         return el

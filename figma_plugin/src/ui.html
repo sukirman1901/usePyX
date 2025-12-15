@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      /* LIGHT MODE (Restored) */
+      --bg-color: #ffffff;
+      --text-main: #111827;
+      /* Gray 900 */
+      --text-secondary: #6b7280;
+      /* Gray 500 */
+      --border-color: #e5e7eb;
+      /* Gray 200 */
+
+      --bg-color: #fafafa;
+      --text-main: #1a1a1a;
+      --text-secondary: #737373;
+      --border-color: #e8e8e8;
+
+      --primary-color: #5b5ff1;
+      --primary-hover: #4a4dd8;
+
+      --code-bg: #f5f5f5;
+      --code-text: #2d2d2d;
+      --accent-bg: #f0f0f0;
+
+      --syn-keyword: #c73ea6;
+      --syn-func: #7c3aed;
+      --syn-string: #059669;
+      --syn-comment: #a3a3a3;
+      --syn-number: #ea580c;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 0;
+      margin: 0;
+      background: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-color);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      color: var(--primary-color);
+    }
+
+    .badge {
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--primary-color);
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 99px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    /* Controls / Toolbar */
+    .toolbar {
+      padding: 16px 20px;
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-color);
+      justify-content: flex-start;
+      /* Align right for hierarchy */
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 6px;
+      /* Modern sleek radius */
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+      border: 1px solid transparent;
+      height: 32px;
+    }
+
+    .btn-primary {
+      background-color: #18181b;
+      /* Zen Black */
+      color: white;
+      border: 1px solid #18181b;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-primary:hover {
+      background-color: #27272a;
+      /* Slightly lighter black */
+      border-color: #27272a;
+      transform: translateY(0);
+      /* Remove bouncy effect for stability */
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+      background-color: #000;
+    }
+
+    .btn-secondary {
+      background-color: #ffffff;
+      border-color: #e4e4e7;
+      color: #18181b;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .btn-secondary:hover {
+      background-color: #f4f4f5;
+      /* Light gray hover */
+      border-color: #d4d4d8;
+      color: #18181b;
+      /* Keep text dark */
+    }
+
+    .btn-secondary:active {
+      background-color: #e4e4e7;
+      transform: scale(0.98);
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      padding: 10px 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--bg-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--text-secondary);
+      transition: background-color 0.3s ease;
+    }
+
+    .status-selected {
+      background-color: #34d399;
+      /* Emerald 400 */
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
+    }
+
+    .status-error {
+      background-color: #f87171;
+    }
+
+    /* Editor */
+    .editor-container {
+      flex: 1;
+      position: relative;
+      background: var(--code-bg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Highlighted Code Display */
+    #code-viewer {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--code-text);
+      overflow: auto;
+      white-space: pre;
+      box-sizing: border-box;
+    }
+
+    /* Syntax Classes */
+    .kwd {
+      color: var(--syn-keyword);
+      font-weight: bold;
+    }
+
+    /* Keywords: def, return, from, import */
+    .str {
+      color: var(--syn-string);
+    }
+
+    /* Strings */
+    .fn {
+      color: var(--syn-func);
+    }
+
+    /* Function calls: ui.div, .flex */
+    .num {
+      color: var(--syn-number);
+    }
+
+    /* Numbers */
+    .cmt {
+      color: var(--syn-comment);
+      font-style: italic;
+    }
+
+    /* Comments */
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--code-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 5px;
+      border: 2px solid var(--code-bg);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4b5563;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Hidden textarea for copy */
+    #clipboard-target {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>
+      <svg class="logo-icon" width="24" height="24" viewBox="0 0 662 662" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <rect width="662" height="662" rx="238" fill="black" />
+        <path
+          d="M482.825 381.179C478.775 373.079 474.305 364.908 469.417 356.668C464.669 348.289 459.152 339.769 452.867 331.11C450.912 333.624 448.398 337.116 445.325 341.585C442.392 346.054 439.39 350.802 436.317 355.83C433.384 360.858 430.591 365.677 427.937 370.285C425.284 374.894 423.329 378.525 422.072 381.179H384.782C390.927 369.866 398.05 357.995 406.15 345.565C414.39 333.135 423.538 319.937 433.594 305.971L386.877 236H426.471L454.753 281.251L482.406 236H519.696L473.607 306.39C485.339 321.613 495.185 335.719 503.146 348.708C511.106 361.556 517.391 372.38 522 381.179H482.825Z"
+          fill="white" />
+        <path
+          d="M382.797 276.432L344.669 381.179C340.758 392.212 336.498 401.011 331.89 407.575C327.281 414.139 321.834 418.888 315.549 421.821C309.264 424.754 301.723 426.22 292.924 426.22C287.058 426.22 281.681 425.592 276.793 424.335C271.905 423.078 267.645 421.332 264.014 419.097L271.136 395.006C273.65 396.821 276.304 398.078 279.097 398.777C281.89 399.615 285.452 400.033 289.781 400.033C293.832 400.033 297.114 399.335 299.628 397.939C302.281 396.542 304.376 393.888 305.912 389.978L308.636 383.484L296.485 354.992L265.061 276.432H304.236L320.367 336.138L325.395 358.344L331.261 335.3L347.392 276.432H382.797Z"
+          fill="white" />
+        <path
+          d="M203.477 242.913C214.789 242.913 224.426 244.729 232.387 248.36C240.347 251.991 246.423 257.229 250.613 264.072C254.802 270.916 256.897 279.226 256.897 289.002C256.897 298.778 254.802 307.088 250.613 313.932C246.423 320.775 240.347 326.012 232.387 329.644C224.426 333.275 214.789 335.09 203.477 335.09H176.033V381.179H140V242.913H203.477ZM197.82 308.066C205.362 308.066 211.018 306.53 214.789 303.457C218.7 300.245 220.655 295.426 220.655 289.002C220.655 282.577 218.7 277.829 214.789 274.756C211.018 271.544 205.362 269.938 197.82 269.938H176.033V308.066H197.82Z"
+          fill="white" />
+      </svg>
+      usePyX
+      <span class="badge">Zen Mode</span>
+    </h1>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-primary" id="generate">
+      Generate
+    </button>
+    <button class="btn btn-secondary" id="copy">
+      Copy
+    </button>
+  </div>
+
+  <div class="main">
+    <div class="status-bar" id="status-container">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Select a frame to start</span>
+    </div>
+
+    <div class="editor-container">
+      <div id="code-viewer"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="info">PyX Engine v1.0</span>
+    <span class="info">Reactive &bull; Typed</span>
+  </div>
+
+  <!-- Hidden textarea for copying -->
+  <textarea id="clipboard-target"></textarea>
+
+  <script>
+    const codeViewer = document.getElementById('code-viewer');
+    const clipboardTarget = document.getElementById('clipboard-target');
+    const statusTextEl = document.getElementById('status-text');
+    const statusDotEl = document.getElementById('status-dot');
+
+    // Simple Syntax Highlighter
+    function highlightCode(code) {
+      // Escape HTML
+      let html = code
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      // Syntax Rules (Regex)
+      // Note: We use single quotes for class attributes in generated HTML 
+      // to avoid conflict with the Double Quote String regex below.
+
+      // 1. Comments
+      html = html.replace(/(#.*)$/gm, "<span class='cmt'>$1</span>");
+
+      // 2. Keywords
+      const keywords = /\b(def|return|from|import|class|if|else|elif|for|in)\b/g;
+      html = html.replace(keywords, "<span class='kwd'>$1</span>");
+
+      // 3. Strings (Double quotes)
+      // This regex looks for double quotes, so it remains safe vs single-quoted attributes
+      html = html.replace(/(".*?")/g, "<span class='str'>$1</span>");
+
+      // 4. PyX UI Components & Methods (ui.div, .flex, etc.)
+      html = html.replace(/\b(ui\.[a-zA-Z_0-9]+)\b/g, "<span class='fn'>$1</span>");
+      html = html.replace(/(\.[a-zA-Z_0-9]+)(?=\()/g, "<span class='fn'>$1</span>");
+
+      // 5. Lucide
+      html = html.replace(/\b(Lucide)\b/g, "<span class='fn'>$1</span>");
+
+      codeViewer.innerHTML = html;
+    }
+
+    // UI Feedback Helpers
+    function setStatus(msg, type = "neutral") {
+      statusTextEl.textContent = msg;
+
+      statusDotEl.className = 'status-dot'; // reset
+      if (type === "success") statusDotEl.classList.add('status-selected');
+      if (type === "error") statusDotEl.classList.add('status-error');
+    }
+
+    // Interaction
+    document.getElementById('generate').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'generate-code' } }, '*');
+      setStatus('Processing...', 'neutral');
+      codeViewer.style.opacity = '0.5';
+    }
+
+    document.getElementById('copy').onclick = () => {
+      clipboardTarget.select();
+      document.execCommand('copy');
+
+      const copyBtn = document.getElementById('copy');
+      const originalText = copyBtn.textContent;
+      copyBtn.textContent = 'Copied!';
+      copyBtn.style.borderColor = '#34d399';
+      copyBtn.style.color = '#34d399';
+
+      setTimeout(() => {
+        copyBtn.textContent = originalText;
+        copyBtn.style.borderColor = '';
+        copyBtn.style.color = '';
+      }, 2000);
+    }
+
+    onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (msg.type === 'generated-code') {
+        const nodes = msg.data;
+        codeViewer.style.opacity = '1';
+
+        if (!nodes || nodes.length === 0) {
+          setStatus('Please select a visual layer first', 'error');
+          codeViewer.innerText = "# No selection detected.\n# Please select a Frame or Group in Figma.";
+          return;
+        }
+
+        const code = generatePyX(nodes);
+
+        // Update Viewers
+        highlightCode(code);
+        clipboardTarget.value = code;
+
+        // Status Update
+        const layerCount = nodes.length;
+        const noun = layerCount === 1 ? 'layer' : 'layers';
+        setStatus(`Successfully generated code for ${layerCount} ${noun}`, 'success');
+      }
+    }
+
+    // --- LOGIC ENGINE ---
+
+    function rgbToHex(r, g, b) {
+      const toHex = (c) => {
+        const hex = Math.round(c * 255).toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+      };
+      return "#" + toHex(r) + toHex(g) + toHex(b);
+    }
+
+    function generatePyX(nodes) {
+      if (!nodes || nodes.length === 0) return "# No selection";
+
+      let componentName = "Component";
+      // If single root node, use its name
+      if (nodes.length === 1 && nodes[0].name) {
+        // Sanitize name: remove spaces/special chars, ensure valid python identifier
+        let cleanName = nodes[0].name.replace(/[^a-zA-Z0-9_]/g, "_");
+        // Ensure it starts with a letter
+        if (!/^[a-zA-Z]/.test(cleanName)) cleanName = "Comp_" + cleanName;
+        componentName = cleanName;
+      }
+
+      let code = "from pyx import ui, Lucide\n\n";
+      code += `def ${componentName}():\n`;
+      code += "    return " + nodes.map(n => nodeToPyX(n, 4)).join("\n");
+      return code;
+    }
+
+    function nodeToPyX(node, indent) {
+      const childIndent = indent + 4;
+      let methods = []; // Array of strings like ".flex()", ".p('[10px]')"
+
+      // --- ULTRA ZEN MODE: Semantic Detection ---
+      const name = node.name ? node.name.toLowerCase() : "";
+      let pyxComponent = "ui.div";
+      let isSpecialComponent = false;
+      let specialArgs = [];
+      let kwargs = [];
+
+      // 1. Explicit Naming Overrides & Smart Logic
+
+      // Icon Detection (Magic Feature)
+      if (name.includes("icon") || name.includes("ico") || name.includes("vec") || name.includes("lucide")) {
+        // Attempt to extract icon name from layer (e.g. "icon-home" -> "home")
+        // Replace common prefixes with empty string, but keep the rest
+        let iconName = name
+          .replace(/icon[-_\s]*/gi, "")
+          .replace(/ico[-_\s]*/gi, "")
+          .replace(/vec[-_\s]*/gi, "")
+          .replace(/lucide[-_\s]*/gi, "")
+          .trim()
+          .replace(/[^a-z0-9-]/gi, "-"); // sanitize
+
+        if (!iconName || iconName.length < 2) iconName = "star"; // fallback if extraction fails
+
+        pyxComponent = "Lucide";
+        specialArgs.push(`"${iconName.toLowerCase()}"`);
+        isSpecialComponent = true;
+      }
+      else if (name.includes("chart") || name.includes("graph") || name.includes("plot")) {
+        // Chart Detection (New Feature)
+        let chartType = "bar"; // default
+
+        if (name.includes("line")) chartType = "line";
+        else if (name.includes("pie")) chartType = "pie";
+        else if (name.includes("doughnut")) chartType = "doughnut";
+        else if (name.includes("area")) chartType = "area";
+        else if (name.includes("radar")) chartType = "radar";
+
+        // Generate semantic method call
+        pyxComponent = `ui.chart.${chartType}`;
+        isSpecialComponent = true;
+
+        // Add placeholder data args based on type
+        if (chartType === "pie" || chartType === "doughnut") {
+          specialArgs.push(`labels=["Red", "Blue", "Yellow"]`);
+          specialArgs.push(`data=[300, 50, 100]`);
+        } else {
+          specialArgs.push(`labels=["Jan", "Feb", "Mar"]`);
+          specialArgs.push(`datasets=[{"label": "Sales", "data": [12, 19, 3], "color": "blue"}]`);
+        }
+        specialArgs.push(`title="${node.name}"`);
+      }
+      else if (name.includes("button") || name.includes("btn")) {
+        pyxComponent = "ui.button";
+        // Smart Override in ui.py now handles custom backgrounds automatically.
+        // No need to force variant="custom".
+      } else if (name.includes("input") || name.includes("field")) {
+        pyxComponent = "ui.input";
+        isSpecialComponent = true; // Handle args manually
+
+        // Smart Input: Try to find a placeholder text inside
+        let placeholder = "Type here...";
+        if (node.children) {
+          const textNode = node.children.find(c => c.type === 'TEXT');
+          if (textNode) placeholder = textNode.characters;
+        }
+        specialArgs.push(`placeholder="${placeholder}"`);
+
+      } else if (name.includes("metric") || name.includes("stat") || name.includes("card")) {
+        // Smart Metric Card Detection
+        // We look for 3 text elements: Label (small/gray), Value (big/bold), Trend (colored)
+        if (node.children && node.children.length >= 2) {
+          const texts = node.children.filter(c => c.type === 'TEXT');
+          if (texts.length >= 2) {
+            pyxComponent = "ui.metric";
+            isSpecialComponent = true;
+
+            // Heuristic: Value is likely the largest font size
+            // Label is likely smaller/gray
+            // Trend usually has +/- or %
+
+            // Sort by fontSize descending
+            const sortedTexts = [...texts].sort((a, b) => (b.fontSize || 12) - (a.fontSize || 12));
+
+            const valueNode = sortedTexts[0];
+            const labelNode = sortedTexts[1];
+            const trendNode = sortedTexts.length > 2 ? sortedTexts[2] : null;
+
+            specialArgs.push(`label="${labelNode.characters}"`);
+            specialArgs.push(`value="${valueNode.characters}"`);
+
+            if (trendNode) {
+              specialArgs.push(`trend="${trendNode.characters}"`);
+              // Detect color from trend node fill?
+              // Simple heuristic for now
+              if (trendNode.characters.includes("+")) specialArgs.push(`color="green"`);
+              else if (trendNode.characters.includes("-")) specialArgs.push(`color="red"`);
+            }
+          }
+        }
+      } else if (name.includes("tabs") || name.includes("tablist")) {
+        // Smart Tabs Detection
+        // Checks if children are likely tabs (contain text, similar size)
+        if (node.children && node.children.length > 1) {
+          const tabItems = node.children.filter(c => c.name.toLowerCase().includes("tab") || c.name.toLowerCase().includes("item"));
+
+          if (tabItems.length > 1) {
+            pyxComponent = "ui.tabs";
+            isSpecialComponent = true;
+
+            // Construct tabs data structure
+            // ui.tabs([{"id": "t1", "label": "Home"}, ...])
+
+            let tabsData = [];
+            tabItems.forEach((item, idx) => {
+              // Find label
+              let label = `Tab ${idx + 1}`;
+              if (item.type === 'TEXT') label = item.characters;
+              else if (item.children) {
+                const text = item.children.find(c => c.type === 'TEXT');
+                if (text) label = text.characters;
+              }
+
+              // Check active state (heuristic: different fill/color)
+              // We can just set the first one as default for now, or detect visual diffs
+              // For simplicity, just extract labels.
+              tabsData.push(`{ "id": "tab_${idx}", "label": "${label}", "content": ui.div("${label} Content") }`);
+            });
+
+            const tabsString = `[\n${" ".repeat(indent + 4)}${tabsData.join(`,\n${" ".repeat(indent + 4)}`)}\n${" ".repeat(indent)}]`;
+            specialArgs.push(`tabs=${tabsString}`);
+          }
+        }
+
+      }
+
+      if (!isSpecialComponent) {
+        // Continue with standard checks if not already handled
+        if (name.includes("image") || name.includes("img") || node.type === "IMAGE") {
+          pyxComponent = "ui.image";
+        } else if (name.includes("badge") || name.includes("tag")) {
+          pyxComponent = "ui.badge"; // Updated to match ui.py static method
+          isSpecialComponent = true;
+          const textNode = node.children && node.children.find(c => c.type === 'TEXT');
+          const badgeText = textNode ? textNode.characters : "Badge";
+          specialArgs.push(`"${badgeText}"`);
+          specialArgs.push('color="blue"');
+        } else if (name.includes("avatar")) {
+          pyxComponent = "ui.avatar";
+          // Pass size as argument, do NOT use chaining .size() as it conflicts with internal properties
+          // Also set isSpecialComponent to avoid adding children as src
+          isSpecialComponent = true;
+          specialArgs.push('size="md"');
+          // If there is an image fill, we could extract it, but for now just placeholder
+          // specialArgs.push('src="..."'); 
+        } else if (name.includes("divider") || name.includes("separator") || name.includes("line")) {
+          // Strict check: Dividers shouldn't have children (unless it's a label text?)
+          // If it has children and layout, it's likely a Container named "Divider Section" or similar.
+          if (!node.children || node.children.length === 0) {
+            pyxComponent = "ui.divider";
+            isSpecialComponent = true; // Divider component usually doesn't accept flexible children args
+          } else {
+            // It has children, so treat as normal div
+            pyxComponent = "ui.div";
+          }
+        } else if (node.type === "VECTOR" || node.type === "STAR" || node.type === "POLYGON" || name.includes("icon")) {
+          pyxComponent = "Lucide"; // Matches SYNTAX_GUIDE usage
+          specialArgs.push('"star"');
+          isSpecialComponent = true;
+        } else if (node.type === "TEXT") {
+          pyxComponent = "ui.text";
+        }
+      }
+
+      // 2. Heuristic Detection
+      if (pyxComponent === "ui.div" && !isSpecialComponent) {
+        // Check for Divider (height or width is 1px)
+        // AND must be leaf node or very simple
+        if ((!node.children || node.children.length === 0) &&
+          ((node.height <= 1 && node.width > 10) || (node.width <= 1 && node.height > 10))) {
+          pyxComponent = "ui.divider";
+          isSpecialComponent = true;
+        }
+      }
+
+      // 3. Layout Logic (Mapped to PyX Methods)
+      // 3. Layout (Flexbox & Grid)
+      if (node.layoutMode === 'HORIZONTAL') {
+        methods.push(`.flex_row()`);
+
+        // Justify (Primary)
+        if (node.primaryAxisAlignItems === 'CENTER') methods.push(`.justify("center")`);
+        else if (node.primaryAxisAlignItems === 'MAX') methods.push(`.justify("end")`);
+        else if (node.primaryAxisAlignItems === 'SPACE_BETWEEN') methods.push(`.justify("between")`);
+
+        // Items (Counter)
+        if (node.counterAxisAlignItems === 'CENTER') methods.push(`.items("center")`);
+        else if (node.counterAxisAlignItems === 'MAX') methods.push(`.items("end")`);
+
+        if (node.itemSpacing && node.itemSpacing > 0) methods.push(`.gap("[${node.itemSpacing}px]")`);
+
+      } else if (node.layoutMode === 'VERTICAL') {
+        methods.push(`.flex_col()`);
+
+        // Items (Counter)
+        if (node.counterAxisAlignItems === 'CENTER') methods.push(`.items("center")`);
+        else if (node.counterAxisAlignItems === 'MAX') methods.push(`.items("end")`);
+
+        // Justify (Primary)
+        if (node.primaryAxisAlignItems === 'CENTER') methods.push(`.justify("center")`);
+        else if (node.primaryAxisAlignItems === 'MAX') methods.push(`.justify("end")`);
+        else if (node.primaryAxisAlignItems === 'SPACE_BETWEEN') methods.push(`.justify("between")`);
+
+        if (node.itemSpacing && node.itemSpacing > 0) methods.push(`.gap("[${node.itemSpacing}px]")`);
+      }
+
+      // Responsive Sizing (The "Responsive Auto-Detection" Upgrade)
+      if (node.type !== 'TEXT' && !isSpecialComponent) {
+        // Horizontal Sizing
+        if (node.layoutSizingHorizontal === 'FILL') {
+          methods.push('.w_full()');
+        } else if (node.layoutSizingHorizontal === 'FIXED') {
+          if (node.width) methods.push(`.w("[${Math.round(node.width)}px]")`);
+        } else if (!node.layoutSizingHorizontal) {
+          // Fallback for non-auto-layout frames
+          if (node.width) methods.push(`.w("[${Math.round(node.width)}px]")`);
+        }
+
+        // Vertical Sizing
+        if (node.layoutSizingVertical === 'FILL') {
+          methods.push('.h_full()');
+        } else if (node.layoutSizingVertical === 'FIXED') {
+          if (node.height) methods.push(`.h("[${Math.round(node.height)}px]")`);
+        } else if (!node.layoutSizingVertical) {
+          if (node.height) methods.push(`.h("[${Math.round(node.height)}px]")`);
+        }
+      }
+
+      // 4. Padding (Shorthand Optimization)
+      const pL = node.paddingLeft || 0;
+      const pR = node.paddingRight || 0;
+      const pT = node.paddingTop || 0;
+      const pB = node.paddingBottom || 0;
+
+      if (pL === pR && pT === pB && pL === pT && pL > 0) {
+        methods.push(`.p("[${pL}px]")`);
+      } else {
+        if (pL === pR && pL > 0) methods.push(`.px("[${pL}px]")`);
+        else {
+          if (pL > 0) methods.push(`.pl("[${pL}px]")`);
+          if (pR > 0) methods.push(`.pr("[${pR}px]")`);
+        }
+
+        if (pT === pB && pT > 0) methods.push(`.py("[${pT}px]")`);
+        else {
+          if (pT > 0) methods.push(`.pt("[${pT}px]")`);
+          if (pB > 0) methods.push(`.pb("[${pB}px]")`);
+        }
+      }
+
+      // 5. Visuals
+      if (node.fills && Array.isArray(node.fills)) {
+        const solidFill = node.fills.find(f => f.type === 'SOLID' && f.visible !== false);
+        if (solidFill) {
+          const hex = rgbToHex(solidFill.color.r, solidFill.color.g, solidFill.color.b);
+          if (node.type === 'TEXT') {
+            methods.push(`.text("[${hex}]")`);
+          } else {
+            methods.push(`.bg("[${hex}]")`);
+            // Opacity
+            if (solidFill.opacity !== undefined && solidFill.opacity < 1) {
+              methods.push(`.opacity("${Math.round(solidFill.opacity * 100)}")`);
+            }
+          }
+        }
+      }
+
+      if (node.strokes && Array.isArray(node.strokes)) {
+        const solidStroke = node.strokes.find(s => s.type === 'SOLID' && s.visible !== false);
+        if (solidStroke) {
+          const hex = rgbToHex(solidStroke.color.r, solidStroke.color.g, solidStroke.color.b);
+          methods.push(`.border()`);
+          methods.push(`.border_color("[${hex}]")`);
+          // Note: using border_color() assuming it maps to border-[color]
+          if (node.strokeWeight && node.strokeWeight > 1) methods.push(`.border("[${node.strokeWeight}px]")`); // simplified check
+        }
+      }
+
+      if (node.cornerRadius && node.cornerRadius > 0) {
+        methods.push(`.rounded("[${node.cornerRadius}px]")`);
+      }
+
+
+      // 6. Generate Output
+      let args = [...specialArgs];
+
+      if (node.type === 'TEXT' && !isSpecialComponent) {
+        const content = node.characters ? node.characters.replace(/\n/g, " ").replace(/"/g, '\\"') : "";
+        args.push(`"${content}"`);
+      }
+
+      if (pyxComponent === "ui.image" && !isSpecialComponent) {
+        args.push(`src="https://via.placeholder.com/${Math.round(node.width)}x${Math.round(node.height)}"`);
+      }
+
+      // Recursion
+      const isSelfClosing = ["ui.image", "ui.divider", "ui.input", "ui.icon"].includes(pyxComponent);
+      const skipChildren = isSpecialComponent || isSelfClosing;
+
+      if (!skipChildren && node.children && node.children.length > 0 && node.type !== 'TEXT') {
+        const childNodes = node.children.map(c => nodeToPyX(c, childIndent));
+        args.push(...childNodes);
+      }
+
+      // Append Kwargs last (Python syntax requirement)
+      if (kwargs.length > 0) {
+        args.push(...kwargs);
+      }
+
+      // NOTE: We no longer push className string to args. We chain methods instead.
+
+      // Formatting
+      const baseIndentOrEmpty = args.length > 0 ? `\n${" ".repeat(indent)}` : "";
+      const methodChain = methods.join("");
+
+      if (args.length === 0) return `${pyxComponent}()${methodChain}`;
+
+      const isSimple = isSelfClosing || (pyxComponent === "ui.text" && args.length <= 2 && methods.length < 3);
+
+      if (isSimple) {
+        return `${pyxComponent}(${args.join(", ")})${methodChain}`;
+      } else {
+        // Multiline
+        const indentStr = `\n${" ".repeat(indent)}`;
+        const joiner = `,${indentStr}`;
+
+        // The closing parenthesis needs to match the start
+        // If we are nested, indent - 4 is the parent's level
+        const closingIndent = `\n${" ".repeat(indent - 4)}`;
+
+        return `${pyxComponent}(${indentStr}${args.join(joiner)}${closingIndent})${methodChain}`;
+      }
+    }
+  </script>
+</body>
+
+</html>
