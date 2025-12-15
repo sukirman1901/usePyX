@@ -38,3 +38,13 @@ Thumbs.db
 
 # PyX specific
 *.log
+
+# Exclude from public repo
+examples/
+impulseai/
+pyxdev/
+uploads/
+*.db
+qc_test.py
+test_implementations.py
+ReflexAdoption.md
