@@ -503,8 +503,11 @@ PyX mengikuti filosofi bahwa developer productivity lebih penting dari ceremonia
 ---
 
 ## 🤝 Contributing
-
+ 
+We love contributions! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) guide to get started.
+ 
 ```bash
+# Quick setup for contributors
 git clone https://github.com/sukirman1901/usePyX.git
 cd usePyX
 pip install -e .
